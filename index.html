@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="UTF-8">
+  <title>GifTastic</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css"> 
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <!-- <script src="assets/javascript/app.js"></script> -->
+</head>
+
+<body>
+  <div class="container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg">  
+      <div id="pokemon-view"></div>
+    
+      <form id="poke-form">
+        <label id="spice" for="poke-input">New Pokemon:</label>
+        <input type="text" id="poke-input"><br>
+        <input id="add-poke" type="submit" value="Add a Pokemon, Yo!">
+        <button type="button" id="add-poke" type="submit" class="btn btn-success">Add a Pokemon!</button>
+      </form>
+  </div>
+  <div id="gifs-appear-here"></div>
+
+<script type="text/javascript">
+  
+  var pokemon = ["Pikachu", "Snorlax", "Squirtle", "Charmander", "Venusaur", "Dragonite", "Charizard", "Mewtwo"];
+
+function renderButtons() {
+
+// Deleting the movie buttons prior to adding new movie buttons
+// (this is necessary otherwise we will have repeat buttons)
+$("#pokemon-view").empty();
+
+for (var i = 0; i < pokemon.length; i++) {
+  var addedButtonContent = $("<button>");
+  addedButtonContent.addClass("poke");
+  addedButtonContent.attr("data-name", pokemon[i]);
+  addedButtonContent.text(pokemon[i]);
+  $("#pokemon-view").append(addedButtonContent);
+  }
+}
+
+// This function handles events where one button is clicked
+$("#add-poke").on("click", function(event) {
+// event.preventDefault() prevents the form from trying to submit itself.
+// We're using a form so that the user can hit enter instead of clicking the button if they want
+event.preventDefault();
+
+// This line will grab the text from the input box
+var poke = $("#poke-input").val().trim();
+// The movie from the textbox is then added to our array
+pokemon.push(poke);
+
+// calling renderButtons which handles the processing of our movie array
+renderButtons();
+});
+
+renderButtons();
+
+/////////////////////
+$(".poke").on("click", function() {
+  var newPoke = $(this).attr("data-name");
+  var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + newPoke + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+  $.ajax({
+    url: queryURL,
+    method: "GET"
+  })
+    .then(function(response) {
+    var results = response.data;
+      // Looping over every result item
+      for (var i = 0; i < results.length; i++) {
+
+        var gifDiv = $("<div>");
+        // gifDiv.addClass("myGifs");
+        var gifPlaying = results[i].images.fixed_height.url;
+        var gifPaused = results[i].images.fixed_height_still.url;
+
+        // Storing the result item's rating
+        var rating = results[i].rating;
+        var p = $("<p>").text("Rating: " + rating);
+
+        // Creating an image tag
+        var pokeImage = $('<img>').attr("src", gifPlaying).attr('data-still', gifPaused).attr('data-animate', gifPlaying);
+        pokeImage.attr('data-state', 'still');
+        $('#gifs-appear-here').prepend(pokeImage);
+        pokeImage.on('click', playGifs); 
+
+        // pokeImage = '<div class="col-md-4">' + pokeImage + '</div>';
+        gifDiv.append(p);
+      
+        // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
+        $("#gifs-appear-here").prepend(gifDiv);
+            }
+        });
+    });
+
+// play and pause gifs on click
+function playGifs() {
+  var state = $(this).attr("data-state");
+    if (state === "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-state", "animate");
+    } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state", "still");
+    }
+  };
+  </script>
+</body>
+</html>

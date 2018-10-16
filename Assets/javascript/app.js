@@ -65,7 +65,8 @@ $(document).ready(function() {
           var p = $("<p>").text("Rating: " + rating);
   
           // Creating an image tag with pause and play links connected
-          var pokeImage = $('<img>').attr("src", gifPlaying).attr('data-still', gifPaused).attr('data-animate', gifPlaying);
+          // var pokeImage = $('<img>').attr("src", gifPlaying).attr('data-still', gifPaused).attr('data-animate', gifPlaying);
+          var pokeImage = $("<img>").attr("src", gifPaused).attr("data-animate", gifPlaying).attr("data-still", gifPaused);
           pokeImage.attr('data-state', 'still');
           $('#gifs-appear-here').prepend(pokeImage);
           pokeImage.on('click', playGifs); 

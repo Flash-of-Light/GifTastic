@@ -1,12 +1,7 @@
-//this only plays on f5 but not initial page load ?
-$(document).ready(function() {
-    $("#my_audio").get(0).play();
-});
-
 //transform the array into buttons
 $(document).ready(function() {  
     var pokemon = ["Pikachu", "Snorlax", "Squirtle", "Charmander", "Venusaur", "Dragonite", "Togepi", "Charizard", "Jigglypuff"];
-    
+    // $("#my_audio").get(0).play();
     function renderButtons() {
     
     //if you don't empty, when you add a new button it will repeat all old buttons.
